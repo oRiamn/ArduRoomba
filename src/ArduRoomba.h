@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+#define ARDUROOMBA_SERIAL_READ_TIMEOUT 500
+
 class ArduRoomba
 {
 public:
@@ -47,6 +49,7 @@ public:
   void start();                                      // Start the OI
   void baud(char baudCode);                          // Set the baud rate
   void safe();                                       // Put the OI into Safe mode
+  void reset();                                      // Send "reset" command (equivalent to battery replacment)
   void full();                                       // Put the OI into Full mode
   void clean();                                      // Start the cleaning mode
   void maxClean();                                        // Start the maximum time cleaning mode
@@ -71,7 +74,7 @@ public:
   // Input commands
   void sensors(char packetID);                      // Request a sensor packet
   void queryList(byte numPackets, byte *packetIDs); // Request a list of sensor packets
-
+  bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
   // Custom commands
   void roombaSetup(); // Setup the Roomba
   void goForward();   // Move the Roomba forward

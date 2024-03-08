@@ -23,6 +23,11 @@ void ArduRoomba::safe()
   _irobot.write(131);
 }
 
+void ArduRoomba::reset()
+{
+  _irobot.write(7);
+}
+
 void ArduRoomba::full()
 {
   _irobot.write(132);
@@ -189,6 +194,30 @@ void ArduRoomba::sensors(char packetID)
     }
   }
   Serial.println();
+}
+
+bool ArduRoomba::getSerialData(char packetID, uint8_t* destbuffer, int len) {
+
+  Serial.print("Packet ID: ");
+  Serial.print(packetID, DEC);
+  Serial.print(", Data: ");
+
+  _irobot.write(142);
+  _irobot.write(packetID);
+  
+  while (len-- > 0) {
+    unsigned long timeout = millis() + ARDUROOMBA_SERIAL_READ_TIMEOUT;
+    while (!_irobot.available()) {
+      if (millis() > timeout) {
+        Serial.print("ArduRoomba::getSerialData ");
+        Serial.print(packetID);
+        Serial.println("timeout");
+        return false; // Timed out
+      }
+    }
+    *destbuffer++ = _irobot.read();
+  }
+  return true;
 }
 
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
