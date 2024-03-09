@@ -7,9 +7,15 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
 }
 
 int ArduRoomba::readOneByteSensorData(char packetID){
-  uint8_t buf[1] = { 0 };
-  getSerialData(packetID, buf, 1);
-  return buf[0];
+  uint8_t packets[1] = { 0 };
+  getSerialData(packetID, packets, 1);
+  return packets[0];
+}
+
+int ArduRoomba::readTwoByteSensorData(char packetID){
+  uint8_t packets[2] = { 0, 0 };
+  getSerialData(packetID, packets, 2);
+  return packets[0] * 256 + packets[1];
 }
 
 // OI commands

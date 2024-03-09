@@ -96,6 +96,7 @@ private:
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
 
   int readOneByteSensorData(char packetID);
+  int readByteSensorData(char packetID);
 
 };
 
