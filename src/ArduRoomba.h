@@ -75,6 +75,12 @@ public:
   void sensors(char packetID);                      // Request a sensor packet
   void queryList(byte numPackets, byte *packetIDs); // Request a list of sensor packets
   bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
+  
+  // sensor request
+  int getMode();      // Request sensor packet mode
+  
+  
+  
   // Custom commands
   void roombaSetup(); // Setup the Roomba
   void goForward();   // Move the Roomba forward
