@@ -226,6 +226,13 @@ int ArduRoomba::getMode(){
   return mode;
 }
 
+int ArduRoomba::getChargingState(){
+  uint8_t buf[1] = { 0 };
+  getSerialData(21, buf, 1);
+  int chargingState = buf[0];
+  return chargingState;
+}
+
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
 {
   _irobot.write(149);

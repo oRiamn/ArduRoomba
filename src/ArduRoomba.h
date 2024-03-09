@@ -77,7 +77,8 @@ public:
   bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
   
   // sensor request
-  int getMode();      // Request sensor packet mode
+  int getMode();               // Request sensor packet "mode"
+  int getChargingState();      // Request sensor packet "charging state"
   
   
   
