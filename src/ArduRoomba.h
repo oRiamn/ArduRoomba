@@ -94,6 +94,9 @@ private:
   const byte _zero = 0x00;
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
+
+  int readOneByteSensorData(char packetID);
+
 };
 
 #endif

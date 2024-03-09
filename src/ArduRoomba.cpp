@@ -6,6 +6,12 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
   // Constructor implementation
 }
 
+int ArduRoomba::readOneByteSensorData(char packetID){
+  uint8_t buf[1] = { 0 };
+  getSerialData(packetID, buf, 1);
+  return buf[0];
+}
+
 // OI commands
 void ArduRoomba::start()
 {
@@ -219,17 +225,13 @@ bool ArduRoomba::getSerialData(char packetID, uint8_t* destbuffer, int len) {
   return true;
 }
 
-int ArduRoomba::getMode(){
-  uint8_t buf[1] = { 0 };
-  getSerialData(35, buf, 1);
-  int mode = buf[0];
+int ArduRoomba::getMode() {
+  int mode = readOneByteSensorData(35);
   return mode;
 }
 
-int ArduRoomba::getChargingState(){
-  uint8_t buf[1] = { 0 };
-  getSerialData(21, buf, 1);
-  int chargingState = buf[0];
+int ArduRoomba::getChargingState() {
+  int chargingState = readOneByteSensorData(21);
   return chargingState;
 }
 
