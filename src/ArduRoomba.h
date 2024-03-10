@@ -82,7 +82,8 @@ public:
   int getVoltage();               // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
   unsigned int getTemperature();  // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
   int getBatteryCharge();         // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
-  
+  int getBatteryCapacity();       // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
+
   
   
   // Custom commands
@@ -99,7 +100,7 @@ private:
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
 
   int readOneByteSensorData(char packetID);
-  int readByteSensorData(char packetID);
+  int readTwoByteSensorData(char packetID);
 
 };
 

@@ -256,6 +256,11 @@ int ArduRoomba::getBatteryCharge() {
   return batteryCharge;
 }
 
+int ArduRoomba::getBatteryCapacity() {
+  int batteryCapacity = readTwoByteSensorData(26);
+  return batteryCapacity;
+}
+
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
 {
   _irobot.write(149);
