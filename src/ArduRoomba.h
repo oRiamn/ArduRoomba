@@ -81,6 +81,7 @@ public:
   int getChargingState();         // Request sensor packet "charging state"
   int getVoltage();               // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
   unsigned int getTemperature();  // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
+  int getBatteryCharge();         // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
   
   
   

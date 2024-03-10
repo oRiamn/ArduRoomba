@@ -251,6 +251,11 @@ unsigned int ArduRoomba::getTemperature() {
   return temperature;
 }
 
+int ArduRoomba::getBatteryCharge() {
+  int batteryCharge = readTwoByteSensorData(25);
+  return batteryCharge;
+}
+
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
 {
   _irobot.write(149);
