@@ -261,6 +261,15 @@ int ArduRoomba::getBatteryCapacity() {
   return batteryCapacity;
 }
 
+void ArduRoomba::getBumpAndWeelsDrops(BumpAndWeelsDrops *drops) {
+  uint8_t packets[1] = { 0 };
+  getSerialData(7, packets, 1);
+  drops->bumpRight = (packets[0] >> 0) & 1;
+  drops->bumpLeft = (packets[0] >> 1) & 1;
+  drops->wheelRight = (packets[0] >> 2) & 1;
+  drops->wheelLeft = (packets[0] >> 3) & 1;
+}
+
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
 {
   _irobot.write(149);
