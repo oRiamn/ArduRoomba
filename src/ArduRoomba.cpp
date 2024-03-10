@@ -241,6 +241,11 @@ int ArduRoomba::getChargingState() {
   return chargingState;
 }
 
+int ArduRoomba::getVoltage() {
+  int voltage = readTwoByteSensorData(22);
+  return voltage;
+}
+
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
 {
   _irobot.write(149);

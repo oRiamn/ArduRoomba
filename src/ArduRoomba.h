@@ -79,6 +79,7 @@ public:
   // sensor request
   int getMode();               // Request sensor packet "mode"
   int getChargingState();      // Request sensor packet "charging state"
+  int getVoltage();            // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
   
   
   
