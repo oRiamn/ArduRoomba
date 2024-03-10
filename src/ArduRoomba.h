@@ -77,9 +77,10 @@ public:
   bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
   
   // sensor request
-  int getMode();               // Request sensor packet "mode"
-  int getChargingState();      // Request sensor packet "charging state"
-  int getVoltage();            // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
+  int getMode();                  // Request sensor packet "mode"
+  int getChargingState();         // Request sensor packet "charging state"
+  int getVoltage();               // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
+  unsigned int getTemperature();  // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
   
   
   

@@ -246,6 +246,11 @@ int ArduRoomba::getVoltage() {
   return voltage;
 }
 
+unsigned int ArduRoomba::getTemperature() {
+  unsigned int temperature = readOneByteSensorData(24);
+  return temperature;
+}
+
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
 {
   _irobot.write(149);
