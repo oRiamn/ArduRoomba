@@ -232,38 +232,38 @@ bool ArduRoomba::getSerialData(char packetID, uint8_t* destbuffer, int len) {
 }
 
 int ArduRoomba::getMode() {
-  int mode = _readOneByteSensorData(35);
+  int mode = _readOneByteSensorData(SENSOR_MODE);
   return mode;
 }
 
 int ArduRoomba::getChargingState() {
-  int chargingState = _readOneByteSensorData(21);
+  int chargingState = _readOneByteSensorData(SENSOR_CHARGINGSTATE);
   return chargingState;
 }
 
 int ArduRoomba::getVoltage() {
-  int voltage = _readTwoByteSensorData(22);
+  int voltage = _readTwoByteSensorData(SENSOR_VOLTAGE);
   return voltage;
 }
 
 unsigned int ArduRoomba::getTemperature() {
-  unsigned int temperature = _readOneByteSensorData(24);
+  unsigned int temperature = _readOneByteSensorData(SENSOR_TEMPERATURE);
   return temperature;
 }
 
 int ArduRoomba::getBatteryCharge() {
-  int batteryCharge = _readTwoByteSensorData(25);
+  int batteryCharge = _readTwoByteSensorData(SENSOR_BATTERYCHARGE);
   return batteryCharge;
 }
 
 int ArduRoomba::getBatteryCapacity() {
-  int batteryCapacity = _readTwoByteSensorData(26);
+  int batteryCapacity = _readTwoByteSensorData(SENSOR_BATTERYCAPACITY);
   return batteryCapacity;
 }
 
 bool ArduRoomba::getBumpAndWeelsDrops(BumpAndWeelsDrops *drops) {
   uint8_t packets[1] = { 0 };
-  if(!getSerialData(7, packets, 1)) {
+  if(!getSerialData(SENSOR_BUMPANDWEELSDROPS, packets, 1)) {
     return false;
   }
   drops->bumpRight = (packets[0] >> 0) & 1;
