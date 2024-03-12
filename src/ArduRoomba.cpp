@@ -6,13 +6,13 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
   // Constructor implementation
 }
 
-int ArduRoomba::readOneByteSensorData(char packetID){
+int ArduRoomba::_readOneByteSensorData(char packetID){
   uint8_t packets[1] = { 0 };
   getSerialData(packetID, packets, 1);
   return packets[0];
 }
 
-int ArduRoomba::readTwoByteSensorData(char packetID){
+int ArduRoomba::_readTwoByteSensorData(char packetID){
   uint8_t packets[2] = { 0, 0 };
   getSerialData(packetID, packets, 2);
   return packets[0] * 256 + packets[1];
@@ -232,42 +232,45 @@ bool ArduRoomba::getSerialData(char packetID, uint8_t* destbuffer, int len) {
 }
 
 int ArduRoomba::getMode() {
-  int mode = readOneByteSensorData(35);
+  int mode = _readOneByteSensorData(35);
   return mode;
 }
 
 int ArduRoomba::getChargingState() {
-  int chargingState = readOneByteSensorData(21);
+  int chargingState = _readOneByteSensorData(21);
   return chargingState;
 }
 
 int ArduRoomba::getVoltage() {
-  int voltage = readTwoByteSensorData(22);
+  int voltage = _readTwoByteSensorData(22);
   return voltage;
 }
 
 unsigned int ArduRoomba::getTemperature() {
-  unsigned int temperature = readOneByteSensorData(24);
+  unsigned int temperature = _readOneByteSensorData(24);
   return temperature;
 }
 
 int ArduRoomba::getBatteryCharge() {
-  int batteryCharge = readTwoByteSensorData(25);
+  int batteryCharge = _readTwoByteSensorData(25);
   return batteryCharge;
 }
 
 int ArduRoomba::getBatteryCapacity() {
-  int batteryCapacity = readTwoByteSensorData(26);
+  int batteryCapacity = _readTwoByteSensorData(26);
   return batteryCapacity;
 }
 
-void ArduRoomba::getBumpAndWeelsDrops(BumpAndWeelsDrops *drops) {
+bool ArduRoomba::getBumpAndWeelsDrops(BumpAndWeelsDrops *drops) {
   uint8_t packets[1] = { 0 };
-  getSerialData(7, packets, 1);
+  if(!getSerialData(7, packets, 1)) {
+    return false;
+  }
   drops->bumpRight = (packets[0] >> 0) & 1;
   drops->bumpLeft = (packets[0] >> 1) & 1;
   drops->wheelRight = (packets[0] >> 2) & 1;
   drops->wheelLeft = (packets[0] >> 3) & 1;
+  return true;
 }
 
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)

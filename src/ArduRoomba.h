@@ -91,7 +91,7 @@ public:
   unsigned int getTemperature();                        // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
   int getBatteryCharge();                               // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
   int getBatteryCapacity();                             // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
-  void getBumpAndWeelsDrops(BumpAndWeelsDrops *drops);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
+  bool getBumpAndWeelsDrops(BumpAndWeelsDrops *drops);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
   
   
   // Custom commands
@@ -107,8 +107,8 @@ private:
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
 
-  int readOneByteSensorData(char packetID);
-  int readTwoByteSensorData(char packetID);
+  int _readOneByteSensorData(char packetID);
+  int _readTwoByteSensorData(char packetID);
 
 };
 
