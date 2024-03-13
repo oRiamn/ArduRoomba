@@ -93,13 +93,13 @@ public:
   bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
   
   // sensor request
-  int getMode();                                        // Request sensor packet "mode"
-  int getChargingState();                               // Request sensor packet "charging state"
-  int getVoltage();                                     // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
-  unsigned int getTemperature();                        // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
-  int getBatteryCharge();                               // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
-  int getBatteryCapacity();                             // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
-  bool getBumpAndWeelsDrops(BumpAndWeelsDrops *drops);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
+  int reqMode();                                        // Request sensor packet "mode"
+  int reqChargingState();                               // Request sensor packet "charging state"
+  int reqVoltage();                                     // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
+  unsigned int reqTemperature();                        // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
+  int reqBatteryCharge();                               // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
+  int reqBatteryCapacity();                             // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
+  bool reqBumpAndWeelsDrops(BumpAndWeelsDrops *drops);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
   
   
   // Custom commands
