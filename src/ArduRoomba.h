@@ -4,14 +4,23 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-#define ARDUROOMBA_SERIAL_READ_TIMEOUT 500
-#define SENSOR_MODE 35
-#define SENSOR_CHARGINGSTATE 21
-#define SENSOR_VOLTAGE 22
-#define SENSOR_TEMPERATURE 24
-#define SENSOR_BATTERYCHARGE 25
-#define SENSOR_BATTERYCAPACITY 26
-#define SENSOR_BUMPANDWEELSDROPS 7
+#define ARDUROOMBA_SERIAL_READ_TIMEOUT 100
+#define ARDUROOMBA_REFRESH_DELAY 70
+#define ARDUROOMBA_STREAM_TIMEOUT 20
+
+#define ARDUROOMBA_SENSOR_MODE 35
+#define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
+#define ARDUROOMBA_SENSOR_VOLTAGE 22
+#define ARDUROOMBA_SENSOR_TEMPERATURE 24
+#define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
+#define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
+#define ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS 7
+
+#define ARDUROOMBA_STREAM_WAIT_HEADER 0
+#define ARDUROOMBA_STREAM_WAIT_SIZE 1
+#define ARDUROOMBA_STREAM_WAIT_CONTENT 2
+#define ARDUROOMBA_STREAM_WAIT_CHECKSUM 3
+#define ARDUROOMBA_STREAM_END 4;
 
 
 class ArduRoomba
@@ -41,6 +50,18 @@ public:
     bool wheelRight; // Wheel Drop Right ?
     bool wheelLeft; // Wheel Drop Left ?
   };
+
+  struct RoombaInfos
+  {
+    int mode;
+    int chargingState;
+    int voltage;
+    unsigned int temperature;
+    int batteryCapacity;
+    int batteryCharge;
+  };
+
+  
 
   struct ScheduleStore
   {
@@ -92,6 +113,23 @@ public:
   void queryList(byte numPackets, byte *packetIDs); // Request a list of sensor packets
   bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
   
+  bool queryStream();
+  bool resetStream();
+  bool refreshData();
+  long getLastSuccedRefresh();
+
+  bool isBumpRight();
+  bool isBumpLeft();
+  bool isDropWheelRight();
+  bool isDropWheelLeft();
+
+  int getMode();                                        // Request sensor packet "mode"
+  int getChargingState();                               // Request sensor packet "charging state"                  // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
+  unsigned int getTemperature();                       // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
+  int getBatteryCapacity();
+  int getBatteryCharge();
+  int getVoltage();
+
   // sensor request
   int reqMode();                                        // Request sensor packet "mode"
   int reqChargingState();                               // Request sensor packet "charging state"
@@ -114,10 +152,30 @@ private:
   const byte _zero = 0x00;
   int _rxPin, _txPin, _brcPin;
   SoftwareSerial _irobot; // SoftwareSerial instance for communication with the Roomba
+  
+  long _nextRefresh;
+  long _lastSuccedRefresh;
+  BumpAndWeelsDrops _drops;
+  RoombaInfos _stateInfos;
 
+  uint8_t _streamBuffer[100] = {};
+  int _nbSensorsStream = 7;
+  int _streamBufferSize = 0;
+  char _sensorsStream[10] = {
+    ARDUROOMBA_SENSOR_MODE,
+    ARDUROOMBA_SENSOR_CHARGINGSTATE,
+    ARDUROOMBA_SENSOR_TEMPERATURE,
+    ARDUROOMBA_SENSOR_VOLTAGE,
+    ARDUROOMBA_SENSOR_BATTERYCHARGE,
+    ARDUROOMBA_SENSOR_BATTERYCAPACITY,
+    ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS
+  };
+  
   int _readOneByteSensorData(char packetID);
   int _readTwoByteSensorData(char packetID);
 
+  bool _readStream();
+  bool _parseStreamBuffer(uint8_t* packets, int len);
 };
 
 #endif
