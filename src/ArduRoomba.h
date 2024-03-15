@@ -43,14 +43,6 @@ public:
     Note notes[16];  // Array of notes, up to 16
   };
 
-  struct BumpAndWeelsDrops
-  {
-    bool bumpRight; // Bump Right ?
-    bool bumpLeft; // Bump Left?
-    bool wheelRight; // Wheel Drop Right ?
-    bool wheelLeft; // Wheel Drop Left ?
-  };
-
   struct RoombaInfos
   {
     int mode;
@@ -59,9 +51,11 @@ public:
     unsigned int temperature;
     int batteryCapacity;
     int batteryCharge;
+    bool bumpRight;              // Bump Right ?
+    bool bumpLeft;               // Bump Left?
+    bool wheelDropRight;         // Wheel Drop Right ?
+    bool wheelDropLeft;          // Wheel Drop Left ?
   };
-
-  
 
   struct ScheduleStore
   {
@@ -113,16 +107,15 @@ public:
   void queryList(byte numPackets, byte *packetIDs); // Request a list of sensor packets
   bool getSerialData(char packetID, uint8_t* destbuffer, int len); // Request a sensor packet and fill buffer with response
   
-  bool queryStream();
-  bool resetStream();
+  void queryStream();
+  void resetStream();
   bool refreshData();
-  long getLastSuccedRefresh();
 
+  long getLastSuccedRefresh();
   bool isBumpRight();
   bool isBumpLeft();
   bool isDropWheelRight();
   bool isDropWheelLeft();
-
   int getMode();                                        // Request sensor packet "mode"
   int getChargingState();                               // Request sensor packet "charging state"                  // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
   unsigned int getTemperature();                       // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
@@ -131,13 +124,13 @@ public:
   int getVoltage();
 
   // sensor request
-  int reqMode();                                        // Request sensor packet "mode"
-  int reqChargingState();                               // Request sensor packet "charging state"
-  int reqVoltage();                                     // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
-  unsigned int reqTemperature();                        // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
-  int reqBatteryCharge();                               // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
-  int reqBatteryCapacity();                             // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
-  bool reqBumpAndWeelsDrops(BumpAndWeelsDrops *drops);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
+  bool reqMode(RoombaInfos *infos);                                        // Request sensor packet "mode"
+  bool reqChargingState(RoombaInfos *infos);                               // Request sensor packet "charging state"
+  bool reqVoltage(RoombaInfos *infos);                                     // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
+  bool reqTemperature(RoombaInfos *infos);                          // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
+  bool reqBatteryCharge(RoombaInfos *infos);                                 // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
+  bool reqBatteryCapacity(RoombaInfos *infos);                               // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
+  bool reqBumpAndWeelsDrops(RoombaInfos *infos);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
   
   
   // Custom commands
@@ -155,7 +148,6 @@ private:
   
   long _nextRefresh;
   long _lastSuccedRefresh;
-  BumpAndWeelsDrops _drops;
   RoombaInfos _stateInfos;
 
   uint8_t _streamBuffer[100] = {};
@@ -174,8 +166,11 @@ private:
   int _readOneByteSensorData(char packetID);
   int _readTwoByteSensorData(char packetID);
 
+  bool _reqOneByteSensorData(char packetID, RoombaInfos *infos);
+  bool _reqTwoByteSensorData(char packetID, RoombaInfos *infos);
+
   bool _readStream();
-  bool _parseStreamBuffer(uint8_t* packets, int len);
+  bool _parseStreamBuffer(uint8_t* packets, int len, RoombaInfos *infos);
 };
 
 #endif

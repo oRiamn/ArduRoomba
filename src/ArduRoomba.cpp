@@ -1,24 +1,12 @@
 #include "ArduRoomba.h"
 
 ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
-    : _rxPin(rxPin), _txPin(txPin), _brcPin(brcPin), _irobot(rxPin, txPin), _drops({}), _stateInfos({}), _nextRefresh(0)
+    : _rxPin(rxPin), _txPin(txPin), _brcPin(brcPin), _irobot(rxPin, txPin), _stateInfos({}), _nextRefresh(0)
 {
   // Constructor implementation
 }
 
-int ArduRoomba::_readOneByteSensorData(char packetID){
-  uint8_t packets[1] = { 0 };
-  getSerialData(packetID, packets, 1);
-  return packets[0];
-}
-
-int ArduRoomba::_readTwoByteSensorData(char packetID){
-  uint8_t packets[2] = { 0, 0 };
-  getSerialData(packetID, packets, 2);
-  return packets[0] * 256 + packets[1];
-}
-
-bool ArduRoomba::queryStream() {
+void ArduRoomba::queryStream() {
   Serial.println("ArduRoomba::queryStream:");
   _irobot.write(148);
   _irobot.write(_nbSensorsStream);
@@ -76,7 +64,7 @@ bool ArduRoomba::_readStream() {
   return isStreamEnd && isChecksum;
 }
 
-bool ArduRoomba::resetStream() {
+void ArduRoomba::resetStream() {
   _irobot.write(148);
   int nbS = 0;
   _irobot.write(nbS);
@@ -86,7 +74,7 @@ bool ArduRoomba::refreshData() {
   long now = millis();
   if(now > _nextRefresh) {
     _nextRefresh = now + ARDUROOMBA_REFRESH_DELAY;
-    if(!_readStream() || !_parseStreamBuffer(_streamBuffer, _streamBufferSize)) {
+    if(!_readStream() || !_parseStreamBuffer(_streamBuffer, _streamBufferSize, &_stateInfos)) {
       return false;
     }
     _lastSuccedRefresh = now + ARDUROOMBA_REFRESH_DELAY;
@@ -99,7 +87,7 @@ long ArduRoomba::getLastSuccedRefresh() {
   return _lastSuccedRefresh;
 }
 
-bool ArduRoomba::_parseStreamBuffer(uint8_t* packets, int len) {
+bool ArduRoomba::_parseStreamBuffer(uint8_t* packets, int len, RoombaInfos *infos) {
   int i = 0;
   char packetID;
   while(i < len) {
@@ -107,34 +95,34 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t* packets, int len) {
     i++;
     switch(packetID) {
         case ARDUROOMBA_SENSOR_MODE :
-          _stateInfos.mode = (int) packets[i];
+          infos->mode = (int) packets[i];
           i++;
           break;
         case ARDUROOMBA_SENSOR_CHARGINGSTATE :
-          _stateInfos.chargingState = (int) packets[i];
+          infos->chargingState = (int) packets[i];
           i++;
           break;
         case ARDUROOMBA_SENSOR_VOLTAGE :
-          _stateInfos.voltage = (int) (packets[i] * 256 + packets[i+1]);
+          infos->voltage = (int) (packets[i] * 256 + packets[i+1]);
           i+=2;
           break;
         case ARDUROOMBA_SENSOR_TEMPERATURE :
-          _stateInfos.temperature = (unsigned int) packets[i];
+          infos->temperature = (unsigned int) packets[i];
           i++;
           break;
         case ARDUROOMBA_SENSOR_BATTERYCHARGE :
-          _stateInfos.batteryCapacity =  (int) (packets[i] * 256 + packets[i]);
+          infos->batteryCapacity =  (int) (packets[i] * 256 + packets[i]);
           i+=2;
           break;
         case ARDUROOMBA_SENSOR_BATTERYCAPACITY :
-          _stateInfos.batteryCharge =  (int) (packets[i] * 256 + packets[i]);
+          infos->batteryCharge =  (int) (packets[i] * 256 + packets[i]);
           i+=2;
           break;
         case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS :
-          _drops.bumpRight = (packets[i] >> 0) & 1;
-          _drops.bumpLeft = (packets[i] >> 1) & 1;
-          _drops.wheelRight = (packets[i] >> 2) & 1;
-          _drops.wheelLeft = (packets[i] >> 3) & 1;
+          infos->bumpRight = (packets[i] >> 0) & 1;
+          infos->bumpLeft = (packets[i] >> 1) & 1;
+          infos->wheelDropRight = (packets[i] >> 2) & 1;
+          infos->wheelDropLeft = (packets[i] >> 3) & 1;
           i++;
           break;
     default:
@@ -148,19 +136,19 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t* packets, int len) {
 }
 
 bool ArduRoomba::isBumpRight() {
-  return _drops.bumpRight;
+  return _stateInfos.bumpRight;
 }
 
 bool ArduRoomba::isBumpLeft() {
-  return _drops.bumpLeft;
+  return _stateInfos.bumpLeft;
 }
 
 bool ArduRoomba::isDropWheelRight() {
-  return _drops.wheelRight;
+  return _stateInfos.wheelDropRight;
 }
 
 bool ArduRoomba::isDropWheelLeft() {
-  return _drops.wheelLeft;
+  return _stateInfos.wheelDropLeft;
 }
 
 int ArduRoomba::getMode() {
@@ -402,46 +390,55 @@ bool ArduRoomba::getSerialData(char packetID, uint8_t* destbuffer, int len) {
   return true;
 }
 
-int ArduRoomba::reqMode() {
-  int mode = _readOneByteSensorData(ARDUROOMBA_SENSOR_MODE);
-  return mode;
-}
-
-int ArduRoomba::reqChargingState() {
-  int chargingState = _readOneByteSensorData(ARDUROOMBA_SENSOR_CHARGINGSTATE);
-  return chargingState;
-}
-
-int ArduRoomba::reqVoltage() {
-  int voltage = _readTwoByteSensorData(ARDUROOMBA_SENSOR_VOLTAGE);
-  return voltage;
-}
-
-unsigned int ArduRoomba::reqTemperature() {
-  unsigned int temperature = _readOneByteSensorData(ARDUROOMBA_SENSOR_TEMPERATURE);
-  return temperature;
-}
-
-int ArduRoomba::reqBatteryCharge() {
-  int batteryCharge = _readTwoByteSensorData(ARDUROOMBA_SENSOR_BATTERYCHARGE);
-  return batteryCharge;
-}
-
-int ArduRoomba::reqBatteryCapacity() {
-  int batteryCapacity = _readTwoByteSensorData(ARDUROOMBA_SENSOR_BATTERYCAPACITY);
-  return batteryCapacity;
-}
-
-bool ArduRoomba::reqBumpAndWeelsDrops(BumpAndWeelsDrops *drops) {
+bool ArduRoomba::_reqOneByteSensorData(char packetID, RoombaInfos *infos) {
   uint8_t packets[1] = { 0 };
-  if(!getSerialData(ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS, packets, 1)) {
+  if(!getSerialData(packetID, packets, 1)) {
     return false;
   }
-  drops->bumpRight = (packets[0] >> 0) & 1;
-  drops->bumpLeft = (packets[0] >> 1) & 1;
-  drops->wheelRight = (packets[0] >> 2) & 1;
-  drops->wheelLeft = (packets[0] >> 3) & 1;
-  return true;
+  uint8_t streambuffer[2] = { 0, 0 };
+  streambuffer[0] = packetID;
+  streambuffer[1] = packets[0];
+  return _parseStreamBuffer(streambuffer, 2, infos);
+}
+
+bool ArduRoomba::_reqTwoByteSensorData(char packetID, RoombaInfos *infos) {
+  uint8_t packets[2] = { 0, 0 };
+  if(getSerialData(packetID, packets, 2)) {
+    return false;
+  }
+  uint8_t streambuffer[3] = { 0, 0, 0 };
+  streambuffer[0] = packetID;
+  streambuffer[1] = packets[0];
+  streambuffer[2] = packets[1];
+  return _parseStreamBuffer(streambuffer, 3, infos);
+}
+
+bool ArduRoomba::reqMode(RoombaInfos *infos) {
+  return _reqOneByteSensorData(ARDUROOMBA_SENSOR_MODE, infos);
+}
+
+bool ArduRoomba::reqChargingState(RoombaInfos *infos) {
+  return _reqOneByteSensorData(ARDUROOMBA_SENSOR_CHARGINGSTATE, infos);
+}
+
+bool ArduRoomba::reqVoltage(RoombaInfos *infos) {
+  return _reqOneByteSensorData(ARDUROOMBA_SENSOR_VOLTAGE, infos);
+}
+
+bool ArduRoomba::reqTemperature(RoombaInfos *infos) {
+  return _reqOneByteSensorData(ARDUROOMBA_SENSOR_TEMPERATURE, infos);
+}
+
+bool ArduRoomba::reqBatteryCharge(RoombaInfos *infos) {
+  return _reqTwoByteSensorData(ARDUROOMBA_SENSOR_BATTERYCHARGE, infos);
+}
+
+bool ArduRoomba::reqBatteryCapacity(RoombaInfos *infos) {
+  return _reqTwoByteSensorData(ARDUROOMBA_SENSOR_BATTERYCAPACITY, infos);
+}
+
+bool ArduRoomba::reqBumpAndWeelsDrops(RoombaInfos *infos) {
+  return _reqOneByteSensorData(ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS, infos);
 }
 
 void ArduRoomba::queryList(byte numPackets, byte *packetIDs)
