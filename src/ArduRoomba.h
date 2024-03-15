@@ -49,6 +49,7 @@
 #define ARDUROOMBA_SENSOR_CLIFFFRONTLEFT 10
 #define ARDUROOMBA_SENSOR_CLIFFRIGHT 12
 #define ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT 11
+#define ARDUROOMBA_SENSOR_WHEELOVERCURRENTS 14
 
 
 class ArduRoomba
@@ -84,6 +85,13 @@ public:
     bool cliffFrontLeft;
     bool cliffRight;
     bool cliffFrontRight;
+
+    bool wheelRightOvercurrent;
+    bool wheelLeftOvercurrent;
+    bool mainBrushOvercurrent;     
+    bool sideBrushOvercurrent; 
+    bool vacuumOvercurrent; // no wacuum for serie 600
+
     bool bumpRight;              // Bump Right ?
     bool bumpLeft;               // Bump Left?
     bool wheelDropRight;         // Wheel Drop Right ?
@@ -161,6 +169,11 @@ public:
   int getBatteryCapacity();
   int getBatteryCharge();
   int getVoltage();
+  bool isWheelRightOvercurrent();
+  bool isWheelLeftOvercurrent();
+  bool isMainBrushOvercurrent();
+  bool isSideBrushOvercurrent();
+  bool isVacuumOvercurrent();
 
   // sensor request
   bool reqMode(RoombaInfos *infos);                                        // Request sensor packet "mode"
@@ -175,7 +188,7 @@ public:
   bool reqCliffRight(RoombaInfos *infos);
   bool reqCliffFrontRight(RoombaInfos *infos);
   bool reqBumpAndWeelsDrops(RoombaInfos *infos);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
-  
+  bool reqWeelsOvercurrents(RoombaInfos *infos);
   
   // Custom commands
   void roombaSetup(); // Setup the Roomba
@@ -195,7 +208,7 @@ private:
   RoombaInfos _stateInfos;
 
   uint8_t _streamBuffer[100] = {};
-  int _nbSensorsStream = 12;
+  int _nbSensorsStream = 13;
   int _streamBufferSize = 0;
   char _sensorsStream[20] = {
     ARDUROOMBA_SENSOR_MODE,
@@ -209,7 +222,8 @@ private:
     ARDUROOMBA_SENSOR_CLIFFLEFT,
     ARDUROOMBA_SENSOR_CLIFFFRONTLEFT,
     ARDUROOMBA_SENSOR_CLIFFRIGHT,
-    ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT
+    ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT,
+    ARDUROOMBA_SENSOR_WHEELOVERCURRENTS
   };
   
   bool _reqNByteSensorData(char packetID, int len, RoombaInfos *infos);

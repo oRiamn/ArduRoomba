@@ -45,6 +45,14 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
       infos->wheelDropLeft = (packets[i] >> 3) & 1;
       i++;
       break;
+    case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
+      infos->sideBrushOvercurrent = (packets[i] >> 0) & 1;
+      infos->vacuumOvercurrent = (packets[i] >> 1) & 1;
+      infos->mainBrushOvercurrent = (packets[i] >> 2) & 1;
+      infos->wheelRightOvercurrent = (packets[i] >> 3) & 1;
+      infos->wheelLeftOvercurrent = (packets[i] >> 4) & 1;
+      i++;
+      break;
     case ARDUROOMBA_SENSOR_WALL:
       infos->wall = (packets[i] >> 0) & 1;
       i++;
@@ -199,6 +207,19 @@ bool ArduRoomba::getCliffLeft() { return _stateInfos.cliffLeft; }
 bool ArduRoomba::getCliffFrontLeft() { return _stateInfos.cliffFrontLeft; }
 bool ArduRoomba::getCliffRight() { return _stateInfos.cliffRight; }
 bool ArduRoomba::getCliffFrontRight() { return _stateInfos.cliffFrontRight; }
+bool ArduRoomba::isWheelRightOvercurrent() {
+  return _stateInfos.wheelRightOvercurrent;
+}
+bool ArduRoomba::isWheelLeftOvercurrent() {
+  return _stateInfos.wheelLeftOvercurrent;
+}
+bool ArduRoomba::isMainBrushOvercurrent() {
+  return _stateInfos.mainBrushOvercurrent;
+}
+bool ArduRoomba::isSideBrushOvercurrent() {
+  return _stateInfos.sideBrushOvercurrent;
+}
+bool ArduRoomba::isVacuumOvercurrent() { return _stateInfos.vacuumOvercurrent; }
 
 // OI commands
 void ArduRoomba::start() { _irobot.write(128); }
@@ -398,6 +419,10 @@ bool ArduRoomba::reqBatteryCapacity(RoombaInfos *infos) {
 
 bool ArduRoomba::reqBumpAndWeelsDrops(RoombaInfos *infos) {
   return _reqNByteSensorData(ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS, 1, infos);
+}
+
+bool ArduRoomba::reqWeelsOvercurrents(RoombaInfos *infos) {
+  return _reqNByteSensorData(ARDUROOMBA_SENSOR_WHEELOVERCURRENTS, 1, infos);
 }
 
 bool ArduRoomba::reqWall(RoombaInfos *infos) {
