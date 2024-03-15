@@ -4,9 +4,38 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+#define ARDUROOMBA_LOGGING 1
+#if ARDUROOMBA_LOGGING
+#define ARDUROOMBA_LOG(...) Serial.print(__VA_ARGS__)
+#else
+#define ARDUROOMBA_LOG(msg, ...)
+#endif
+
+#define ARDUROOMBA_DEBUGING 0
+#if ARDUROOMBA_DEBUGING
+#define ARDUROOMBA_DEBUG(...) Serial.print(__VA_ARGS__)
+#else
+#define ARDUROOMBA_DEBUG(msg, ...)
+#endif
+
+#define ARDUROOMBA_ERROR_LOG 1
+#if ARDUROOMBA_ERROR_LOG
+#define ARDUROOMBA_ERROR(...) Serial.print(__VA_ARGS__)
+#else
+#define ARDUROOMBA_ERROR(msg, ...)
+#endif
+
+
 #define ARDUROOMBA_SERIAL_READ_TIMEOUT 100
-#define ARDUROOMBA_REFRESH_DELAY 70
-#define ARDUROOMBA_STREAM_TIMEOUT 20
+
+#define ARDUROOMBA_REFRESH_DELAY 90
+#define ARDUROOMBA_STREAM_TIMEOUT 30
+
+#define ARDUROOMBA_STREAM_WAIT_HEADER 0
+#define ARDUROOMBA_STREAM_WAIT_SIZE 1
+#define ARDUROOMBA_STREAM_WAIT_CONTENT 2
+#define ARDUROOMBA_STREAM_WAIT_CHECKSUM 3
+#define ARDUROOMBA_STREAM_END 4;
 
 #define ARDUROOMBA_SENSOR_MODE 35
 #define ARDUROOMBA_SENSOR_CHARGINGSTATE 21
@@ -15,12 +44,11 @@
 #define ARDUROOMBA_SENSOR_BATTERYCHARGE 25
 #define ARDUROOMBA_SENSOR_BATTERYCAPACITY 26
 #define ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS 7
-
-#define ARDUROOMBA_STREAM_WAIT_HEADER 0
-#define ARDUROOMBA_STREAM_WAIT_SIZE 1
-#define ARDUROOMBA_STREAM_WAIT_CONTENT 2
-#define ARDUROOMBA_STREAM_WAIT_CHECKSUM 3
-#define ARDUROOMBA_STREAM_END 4;
+#define ARDUROOMBA_SENSOR_WALL 8
+#define ARDUROOMBA_SENSOR_CLIFFLEFT 9
+#define ARDUROOMBA_SENSOR_CLIFFFRONTLEFT 10
+#define ARDUROOMBA_SENSOR_CLIFFRIGHT 12
+#define ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT 11
 
 
 class ArduRoomba
@@ -51,6 +79,11 @@ public:
     unsigned int temperature;
     int batteryCapacity;
     int batteryCharge;
+    bool wall;
+    bool cliffLeft;
+    bool cliffFrontLeft;
+    bool cliffRight;
+    bool cliffFrontRight;
     bool bumpRight;              // Bump Right ?
     bool bumpLeft;               // Bump Left?
     bool wheelDropRight;         // Wheel Drop Right ?
@@ -111,7 +144,13 @@ public:
   void resetStream();
   bool refreshData();
 
+  // state getters
   long getLastSuccedRefresh();
+  bool getWall();
+  bool getCliffLeft();
+  bool getCliffFrontLeft();
+  bool getCliffRight();
+  bool getCliffFrontRight();
   bool isBumpRight();
   bool isBumpLeft();
   bool isDropWheelRight();
@@ -129,7 +168,12 @@ public:
   bool reqVoltage(RoombaInfos *infos);                                     // Request sensor packet "voltage" (voltage of Roomba's battery in milivolts)
   bool reqTemperature(RoombaInfos *infos);                          // Request sensor packet "temperature" (temperature of Roomba's battery in degrees Celsius)
   bool reqBatteryCharge(RoombaInfos *infos);                                 // Request sensor packet "battery charge" (the current charge of Roomba's battery in miliamp-hours)
-  bool reqBatteryCapacity(RoombaInfos *infos);                               // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
+  bool reqBatteryCapacity(RoombaInfos *infos);  
+  bool reqWall(RoombaInfos *infos);                               // Request sensor packet "battery capacity" (the estimated charge capacity of Roomba's battery in miliamp-hours)
+  bool reqCliffLeft(RoombaInfos *infos);
+  bool reqCliffFrontLeft(RoombaInfos *infos);
+  bool reqCliffRight(RoombaInfos *infos);
+  bool reqCliffFrontRight(RoombaInfos *infos);
   bool reqBumpAndWeelsDrops(RoombaInfos *infos);  // Request sensor packet "Bumps and Wheel Drops" (the state of the bumper and wheel drop sensor)
   
   
@@ -151,24 +195,24 @@ private:
   RoombaInfos _stateInfos;
 
   uint8_t _streamBuffer[100] = {};
-  int _nbSensorsStream = 7;
+  int _nbSensorsStream = 12;
   int _streamBufferSize = 0;
-  char _sensorsStream[10] = {
+  char _sensorsStream[20] = {
     ARDUROOMBA_SENSOR_MODE,
     ARDUROOMBA_SENSOR_CHARGINGSTATE,
     ARDUROOMBA_SENSOR_TEMPERATURE,
     ARDUROOMBA_SENSOR_VOLTAGE,
     ARDUROOMBA_SENSOR_BATTERYCHARGE,
     ARDUROOMBA_SENSOR_BATTERYCAPACITY,
-    ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS
+    ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS,
+    ARDUROOMBA_SENSOR_WALL,
+    ARDUROOMBA_SENSOR_CLIFFLEFT,
+    ARDUROOMBA_SENSOR_CLIFFFRONTLEFT,
+    ARDUROOMBA_SENSOR_CLIFFRIGHT,
+    ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT
   };
   
-  int _readOneByteSensorData(char packetID);
-  int _readTwoByteSensorData(char packetID);
-
-  bool _reqOneByteSensorData(char packetID, RoombaInfos *infos);
-  bool _reqTwoByteSensorData(char packetID, RoombaInfos *infos);
-
+  bool _reqNByteSensorData(char packetID, int len, RoombaInfos *infos);
   bool _readStream();
   bool _parseStreamBuffer(uint8_t* packets, int len, RoombaInfos *infos);
 };
