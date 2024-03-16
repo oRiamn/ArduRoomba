@@ -175,7 +175,7 @@ bool ArduRoomba::refreshData() {
       ARDUROOMBA_ERROR("ArduRoomba::refreshData error\n");
       return false;
     }
-    _lastSuccedRefresh = now + ARDUROOMBA_REFRESH_DELAY;
+    _lastSuccedRefresh = now;
     return true;
   }
   return false;
