@@ -31,11 +31,11 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
       i++;
       break;
     case ARDUROOMBA_SENSOR_BATTERYCHARGE:
-      infos->batteryCharge = (int)(packets[i] * 256 + packets[i]);
+      infos->batteryCharge = (int)(packets[i] * 256 + packets[i + 1]);
       i += 2;
       break;
     case ARDUROOMBA_SENSOR_BATTERYCAPACITY:
-      infos->batteryCapacity = (int)(packets[i] * 256 + packets[i]);
+      infos->batteryCapacity = (int)(packets[i] * 256 + packets[i + 1]);
       i += 2;
       break;
     case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
