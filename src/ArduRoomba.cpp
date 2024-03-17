@@ -6,72 +6,72 @@ ArduRoomba::ArduRoomba(int rxPin, int txPin, int brcPin)
   // Constructor implementation
 }
 
+uint8_t ArduRoomba::_parseOneByteStreamBuffer(uint8_t *packets, int &start) {
+  uint8_t v = packets[start];
+  start++;
+  return v;
+}
+
+int ArduRoomba::_parseTwoByteStreamBuffer(uint8_t *packets, int &start) {
+  int v = (int)(packets[start] * 256 + packets[start + 1]);
+  start += 2;
+  return v;
+}
+
 bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
                                     RoombaInfos *infos) {
   int i = 0;
   char packetID;
   while (i < len) {
-    packetID = packets[i];
-    i++;
+    packetID = (char)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
     case ARDUROOMBA_SENSOR_MODE:
-      infos->mode = (int)packets[i];
-      i++;
+      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CHARGINGSTATE:
-      infos->chargingState = (int)packets[i];
-      i++;
+      infos->chargingState = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_VOLTAGE:
-      infos->voltage = (int)(packets[i] * 256 + packets[i + 1]);
-      i += 2;
+      infos->voltage = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_TEMPERATURE:
-      infos->temperature = (unsigned int)packets[i];
-      i++;
+      infos->temperature = (unsigned int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BATTERYCHARGE:
-      infos->batteryCharge = (int)(packets[i] * 256 + packets[i + 1]);
-      i += 2;
+      infos->batteryCharge = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BATTERYCAPACITY:
-      infos->batteryCapacity = (int)(packets[i] * 256 + packets[i + 1]);
-      i += 2;
-      break;
-    case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
-      infos->bumpRight = (packets[i] >> 0) & 1;
-      infos->bumpLeft = (packets[i] >> 1) & 1;
-      infos->wheelDropRight = (packets[i] >> 2) & 1;
-      infos->wheelDropLeft = (packets[i] >> 3) & 1;
-      i++;
-      break;
-    case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
-      infos->sideBrushOvercurrent = (packets[i] >> 0) & 1;
-      infos->vacuumOvercurrent = (packets[i] >> 1) & 1;
-      infos->mainBrushOvercurrent = (packets[i] >> 2) & 1;
-      infos->wheelRightOvercurrent = (packets[i] >> 3) & 1;
-      infos->wheelLeftOvercurrent = (packets[i] >> 4) & 1;
-      i++;
+      infos->batteryCapacity = (int)_parseTwoByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_WALL:
-      infos->wall = (packets[i] >> 0) & 1;
-      i++;
+      infos->wall = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CLIFFLEFT:
-      infos->cliffLeft = (packets[i] >> 0) & 1;
-      i++;
+      infos->cliffLeft = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CLIFFFRONTLEFT:
-      infos->cliffFrontLeft = (packets[i] >> 0) & 1;
-      i++;
+      infos->cliffFrontLeft = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CLIFFRIGHT:
-      infos->cliffRight = (packets[i] >> 0) & 1;
-      i++;
+      infos->cliffRight = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT:
-      infos->cliffFrontRight = (packets[i] >> 0) & 1;
-      i++;
+      infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
+    case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
+      uint8_t drops = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->bumpRight = (drops >> 0) & 1;
+      infos->bumpLeft = (drops >> 1) & 1;
+      infos->wheelDropRight = (drops >> 2) & 1;
+      infos->wheelDropLeft = (drops >> 3) & 1;
+      break;
+    case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
+      uint8_t overcurrents = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->sideBrushOvercurrent = (overcurrents >> 0) & 1;
+      infos->vacuumOvercurrent = (overcurrents >> 1) & 1;
+      infos->mainBrushOvercurrent = (overcurrents >> 2) & 1;
+      infos->wheelRightOvercurrent = (overcurrents >> 3) & 1;
+      infos->wheelLeftOvercurrent = (overcurrents >> 4) & 1;
       break;
     default:
       ARDUROOMBA_ERROR("Unhandled Packet ID: ");

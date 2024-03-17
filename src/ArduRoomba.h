@@ -229,6 +229,8 @@ private:
   bool _reqNByteSensorData(char packetID, int len, RoombaInfos *infos);
   bool _readStream();
   bool _parseStreamBuffer(uint8_t* packets, int len, RoombaInfos *infos);
+  uint8_t _parseOneByteStreamBuffer(uint8_t* packets, int& start);
+  int _parseTwoByteStreamBuffer(uint8_t* packets, int& start);
 };
 
 #endif
