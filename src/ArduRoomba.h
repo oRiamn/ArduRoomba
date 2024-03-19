@@ -50,6 +50,7 @@
 #define ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT 11
 #define ARDUROOMBA_SENSOR_WHEELOVERCURRENTS 14
 #define ARDUROOMBA_SENSOR_DIRTDETECT 15
+#define ARDUROOMBA_SENSOR_VIRTUALWALL 13
 
 class ArduRoomba {
 public:
@@ -78,6 +79,7 @@ public:
     int dirtdetect;
 
     bool wall;
+    bool virtualWall;
     bool cliffLeft;
     bool cliffFrontLeft;
     bool cliffRight;
@@ -159,6 +161,7 @@ public:
   // state getters
   long getLastSuccedRefresh();
   bool getWall();
+  bool getVirtualWall();
   bool getCliffLeft();
   bool getCliffFrontLeft();
   bool getCliffRight();
@@ -189,6 +192,7 @@ public:
   bool reqBatteryCharge(RoombaInfos *infos);
   bool reqBatteryCapacity(RoombaInfos *infos);
   bool reqWall(RoombaInfos *infos);
+  bool reqVirtualWall(RoombaInfos *infos);
   bool reqCliffLeft(RoombaInfos *infos);
   bool reqCliffFrontLeft(RoombaInfos *infos);
   bool reqCliffRight(RoombaInfos *infos);
@@ -224,6 +228,7 @@ private:
                              ARDUROOMBA_SENSOR_BATTERYCHARGE,
                              ARDUROOMBA_SENSOR_BATTERYCAPACITY,
                              ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS,
+                             ARDUROOMBA_SENSOR_VIRTUALWALL,
                              ARDUROOMBA_SENSOR_WALL,
                              ARDUROOMBA_SENSOR_CLIFFLEFT,
                              ARDUROOMBA_SENSOR_CLIFFFRONTLEFT,

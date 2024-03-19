@@ -50,6 +50,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
     case ARDUROOMBA_SENSOR_WALL:
       infos->wall = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_VIRTUALWALL:
+      infos->virtualWall = (bool)_parseOneByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_CLIFFLEFT:
       infos->cliffLeft = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
@@ -209,6 +212,7 @@ int ArduRoomba::getBatteryCharge() { return _stateInfos.batteryCharge; }
 
 int ArduRoomba::getVoltage() { return _stateInfos.voltage; }
 bool ArduRoomba::getWall() { return _stateInfos.wall; }
+bool ArduRoomba::getVirtualWall() { return _stateInfos.wall; }
 bool ArduRoomba::getCliffLeft() { return _stateInfos.cliffLeft; }
 bool ArduRoomba::getCliffFrontLeft() { return _stateInfos.cliffFrontLeft; }
 bool ArduRoomba::getCliffRight() { return _stateInfos.cliffRight; }
@@ -437,6 +441,10 @@ bool ArduRoomba::reqWeelsOvercurrents(RoombaInfos *infos) {
 
 bool ArduRoomba::reqWall(RoombaInfos *infos) {
   return _reqNByteSensorData(ARDUROOMBA_SENSOR_WALL, 1, infos);
+}
+
+bool ArduRoomba::reqVirtualWall(RoombaInfos *infos) {
+  return _reqNByteSensorData(ARDUROOMBA_SENSOR_VIRTUALWALL, 1, infos);
 }
 
 bool ArduRoomba::reqCliffLeft(RoombaInfos *infos) {
