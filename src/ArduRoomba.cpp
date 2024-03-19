@@ -22,6 +22,7 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
                                     RoombaInfos *infos) {
   int i = 0;
   char packetID;
+  uint8_t onebytepacket;
   while (i < len) {
     packetID = (char)_parseOneByteStreamBuffer(packets, i);
     switch (packetID) {
@@ -62,19 +63,19 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
       infos->cliffFrontRight = (bool)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS:
-      uint8_t drops = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->bumpRight = (drops >> 0) & 1;
-      infos->bumpLeft = (drops >> 1) & 1;
-      infos->wheelDropRight = (drops >> 2) & 1;
-      infos->wheelDropLeft = (drops >> 3) & 1;
+      onebytepacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->bumpRight = (onebytepacket >> 0) & 1;
+      infos->bumpLeft = (onebytepacket >> 1) & 1;
+      infos->wheelDropRight = (onebytepacket >> 2) & 1;
+      infos->wheelDropLeft = (onebytepacket >> 3) & 1;
       break;
     case ARDUROOMBA_SENSOR_WHEELOVERCURRENTS:
-      uint8_t overcurrents = (uint8_t)_parseOneByteStreamBuffer(packets, i);
-      infos->sideBrushOvercurrent = (overcurrents >> 0) & 1;
-      infos->vacuumOvercurrent = (overcurrents >> 1) & 1;
-      infos->mainBrushOvercurrent = (overcurrents >> 2) & 1;
-      infos->wheelRightOvercurrent = (overcurrents >> 3) & 1;
-      infos->wheelLeftOvercurrent = (overcurrents >> 4) & 1;
+      onebytepacket = (uint8_t)_parseOneByteStreamBuffer(packets, i);
+      infos->sideBrushOvercurrent = (onebytepacket >> 0) & 1;
+      infos->vacuumOvercurrent = (onebytepacket >> 1) & 1;
+      infos->mainBrushOvercurrent = (onebytepacket >> 2) & 1;
+      infos->wheelRightOvercurrent = (onebytepacket >> 3) & 1;
+      infos->wheelLeftOvercurrent = (onebytepacket >> 4) & 1;
       break;
     default:
       ARDUROOMBA_ERROR("Unhandled Packet ID: ");
