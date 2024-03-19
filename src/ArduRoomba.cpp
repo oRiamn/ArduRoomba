@@ -29,6 +29,9 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
     case ARDUROOMBA_SENSOR_MODE:
       infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
       break;
+    case ARDUROOMBA_SENSOR_IROPCODE:
+      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
+      break;
     case ARDUROOMBA_SENSOR_DIRTDETECT:
       infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
       break;
@@ -199,6 +202,8 @@ bool ArduRoomba::isDropWheelRight() { return _stateInfos.wheelDropRight; }
 bool ArduRoomba::isDropWheelLeft() { return _stateInfos.wheelDropLeft; }
 
 int ArduRoomba::getMode() { return _stateInfos.mode; }
+
+int ArduRoomba::getIrOpcode() { return _stateInfos.irOpcode; }
 
 int ArduRoomba::getDirtDetect() { return _stateInfos.dirtdetect; }
 
@@ -405,6 +410,10 @@ bool ArduRoomba::getSerialData(char packetID, uint8_t *destbuffer, int len) {
 
 bool ArduRoomba::reqMode(RoombaInfos *infos) {
   return _reqNByteSensorData(ARDUROOMBA_SENSOR_MODE, 1, infos);
+}
+
+bool ArduRoomba::reqIrOpcode(RoombaInfos *infos) {
+  return _reqNByteSensorData(ARDUROOMBA_SENSOR_IROPCODE, 1, infos);
 }
 
 bool ArduRoomba::reqDirtDetect(RoombaInfos *infos) {

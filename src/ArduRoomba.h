@@ -51,6 +51,7 @@
 #define ARDUROOMBA_SENSOR_WHEELOVERCURRENTS 14
 #define ARDUROOMBA_SENSOR_DIRTDETECT 15
 #define ARDUROOMBA_SENSOR_VIRTUALWALL 13
+#define ARDUROOMBA_SENSOR_IROPCODE 17
 
 class ArduRoomba {
 public:
@@ -77,6 +78,7 @@ public:
     int batteryCapacity;
     int batteryCharge;
     int dirtdetect;
+    int irOpcode;
 
     bool wall;
     bool virtualWall;
@@ -171,6 +173,7 @@ public:
   bool isDropWheelRight();
   bool isDropWheelLeft();
   int getMode();
+  int getIrOpcode();
   int getDirtDetect();
   int getChargingState();
   unsigned int getTemperature();
@@ -185,6 +188,7 @@ public:
 
   // sensor request
   bool reqMode(RoombaInfos *infos);
+  bool reqIrOpcode(RoombaInfos *infos);
   bool reqDirtDetect(RoombaInfos *infos);
   bool reqChargingState(RoombaInfos *infos);
   bool reqVoltage(RoombaInfos *infos);
@@ -219,9 +223,10 @@ private:
   RoombaInfos _stateInfos;
 
   uint8_t _streamBuffer[100] = {};
-  int _nbSensorsStream = 14;
+  int _nbSensorsStream = 16;
   int _streamBufferSize = 0;
   char _sensorsStream[20] = {ARDUROOMBA_SENSOR_MODE,
+                             ARDUROOMBA_SENSOR_IROPCODE,
                              ARDUROOMBA_SENSOR_CHARGINGSTATE,
                              ARDUROOMBA_SENSOR_TEMPERATURE,
                              ARDUROOMBA_SENSOR_VOLTAGE,
