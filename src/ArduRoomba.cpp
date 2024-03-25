@@ -147,7 +147,7 @@ bool ArduRoomba::_readStream() {
 
 bool ArduRoomba::_reqNByteSensorData(char packetID, int len,
                                      RoombaInfos *infos) {
-  uint8_t packets[2] = {0, 0}; // sensors use 2 bytes
+  uint8_t packets[2] = {0, 0}; // sensors use 2 bytes max
   if (!getSerialData(packetID, packets, len)) {
     return false;
   }
