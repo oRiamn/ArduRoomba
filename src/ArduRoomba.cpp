@@ -30,10 +30,10 @@ bool ArduRoomba::_parseStreamBuffer(uint8_t *packets, int len,
       infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_IROPCODE:
-      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->irOpcode = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_CHARGERAVAILABLE:
-      infos->mode = (int)_parseOneByteStreamBuffer(packets, i);
+      infos->chargerAvailable = (int)_parseOneByteStreamBuffer(packets, i);
       break;
     case ARDUROOMBA_SENSOR_DIRTDETECT:
       infos->dirtdetect = (int)_parseOneByteStreamBuffer(packets, i);
