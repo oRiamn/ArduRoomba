@@ -18,7 +18,7 @@
 #define ARDUROOMBA_DEBUG(msg, ...)
 #endif
 
-#define ARDUROOMBA_ERROR_LOG 1
+#define ARDUROOMBA_ERROR_LOG 0
 #if ARDUROOMBA_ERROR_LOG
 #define ARDUROOMBA_ERROR(...) Serial.print(__VA_ARGS__)
 #else
@@ -27,8 +27,8 @@
 
 #define ARDUROOMBA_SERIAL_READ_TIMEOUT 100
 
-#define ARDUROOMBA_REFRESH_DELAY 90
-#define ARDUROOMBA_STREAM_TIMEOUT 30
+#define ARDUROOMBA_REFRESH_DELAY 40
+#define ARDUROOMBA_STREAM_TIMEOUT 20 // stream time slot = 15ms
 
 #define ARDUROOMBA_STREAM_WAIT_HEADER 0
 #define ARDUROOMBA_STREAM_WAIT_SIZE 1
@@ -158,7 +158,7 @@ public:
       char packetID, uint8_t *destbuffer,
       int len); // Request a sensor packet and fill buffer with response
 
-  void queryStream();
+  void queryStream(char sensorlist[]);
   void resetStream();
   bool refreshData();
 
@@ -227,26 +227,14 @@ private:
   RoombaInfos _stateInfos;
 
   uint8_t _streamBuffer[100] = {};
-  int _nbSensorsStream = 17;
+  // warning don't request to many sensor
+  // stream data time slot = 15ms and
+  // max number of requested sensor depend on baudrate and number of bytes
+  int _nbSensorsStream = 0;
   int _streamBufferSize = 0;
-  char _sensorsStream[20] = {ARDUROOMBA_SENSOR_MODE,
-                             ARDUROOMBA_SENSOR_IROPCODE,
-                             ARDUROOMBA_SENSOR_CHARGINGSTATE,
-                             ARDUROOMBA_SENSOR_TEMPERATURE,
-                             ARDUROOMBA_SENSOR_VOLTAGE,
-                             ARDUROOMBA_SENSOR_BATTERYCHARGE,
-                             ARDUROOMBA_SENSOR_CHARGERAVAILABLE,
-                             ARDUROOMBA_SENSOR_BATTERYCAPACITY,
-                             ARDUROOMBA_SENSOR_BUMPANDWEELSDROPS,
-                             ARDUROOMBA_SENSOR_VIRTUALWALL,
-                             ARDUROOMBA_SENSOR_WALL,
-                             ARDUROOMBA_SENSOR_CLIFFLEFT,
-                             ARDUROOMBA_SENSOR_CLIFFFRONTLEFT,
-                             ARDUROOMBA_SENSOR_CLIFFRIGHT,
-                             ARDUROOMBA_SENSOR_CLIFFFRONTRIGHT,
-                             ARDUROOMBA_SENSOR_WHEELOVERCURRENTS,
-                             ARDUROOMBA_SENSOR_DIRTDETECT};
+  int _sensorsStream[52];
 
+  int _sensorsListLength(char sensorlist[]);
   bool _reqNByteSensorData(char packetID, int len, RoombaInfos *infos);
   bool _readStream();
   bool _parseStreamBuffer(uint8_t *packets, int len, RoombaInfos *infos);

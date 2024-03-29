@@ -160,11 +160,22 @@ bool ArduRoomba::_reqNByteSensorData(char packetID, int len,
   return _parseStreamBuffer(streambuffer, len + 1, infos);
 }
 
-void ArduRoomba::queryStream() {
+int ArduRoomba::_sensorsListLength(char sensorlist[]) {
+  int i;
+  int count = 0;
+  for (i = 0; sensorlist[i] != '\0'; i++) {
+    count++;
+  }
+  return count;
+}
+
+void ArduRoomba::queryStream(char sensorlist[]) {
   ARDUROOMBA_LOG("ArduRoomba::queryStream:\n");
+  _nbSensorsStream = _sensorsListLength(sensorlist);
   _irobot.write(148);
   _irobot.write(_nbSensorsStream);
   for (int i = 0; i < _nbSensorsStream; i++) {
+    _sensorsStream[i] = sensorlist[i];
     ARDUROOMBA_LOG(" ");
     ARDUROOMBA_LOG(_sensorsStream[i], DEC);
     ARDUROOMBA_LOG("\n");
@@ -175,8 +186,7 @@ void ArduRoomba::queryStream() {
 void ArduRoomba::resetStream() {
   ARDUROOMBA_LOG("ArduRoomba::resetStream\n");
   _irobot.write(148);
-  int nbS = 0;
-  _irobot.write(nbS);
+  _irobot.write(_zero);
 }
 
 bool ArduRoomba::refreshData() {
