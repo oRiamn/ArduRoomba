@@ -247,7 +247,7 @@ namespace PowerLEDColor {
 // ============================================================================
 
 /** @brief Song and note constraints */
-namespace Song {
+namespace SongConstant {
     static const uint8_t MAX_SONGS = 4;        ///< Maximum number of songs
     static const uint8_t MAX_NOTES = 16;       ///< Maximum notes per song
     static const uint8_t MIN_NOTE = 31;        ///< Minimum MIDI note number

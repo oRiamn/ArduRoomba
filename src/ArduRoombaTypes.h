@@ -22,6 +22,21 @@
 
 namespace ArduRoomba {
 
+
+/**
+    * @brief Predefined sensor sets for common use cases
+    */
+enum class SensorPreset {
+    BASIC,          ///< Basic sensors (bumpers, cliffs, wall, battery)
+    NAVIGATION,     ///< Navigation sensors (encoders, velocity, radius)
+    SAFETY,         ///< Safety sensors (cliffs, bumpers, wheel drops, overcurrents)
+    BATTERY,        ///< Battery sensors (voltage, current, charge, capacity, temperature)
+    BUTTONS,        ///< Button and IR sensors
+    LIGHT_BUMPERS,  ///< Light bumper sensors
+    ALL_SENSORS     ///< All available sensors
+};
+
+
 // ============================================================================
 // FORWARD DECLARATIONS
 // ============================================================================
@@ -62,8 +77,8 @@ struct Note {
      * @return true if note is valid, false otherwise
      */
     bool isValid() const {
-        return (noteNumber >= Song::MIN_NOTE && noteNumber <= Song::MAX_NOTE) &&
-               (noteDuration > 0 && noteDuration <= Song::MAX_DURATION);
+        return (noteNumber >= SongConstant::MIN_NOTE && noteNumber <= SongConstant::MAX_NOTE) &&
+               (noteDuration > 0 && noteDuration <= SongConstant::MAX_DURATION);
     }
 };
 
@@ -81,7 +96,7 @@ struct Note {
 struct Song {
     uint8_t songNumber; ///< Song identifier (0-4)
     uint8_t songLength; ///< Number of notes in the song (1-16)
-    Note notes[Song::MAX_NOTES]; ///< Array of notes in the song
+    Note notes[SongConstant::MAX_NOTES]; ///< Array of notes in the song
     
     /**
      * @brief Default constructor
@@ -100,7 +115,7 @@ struct Song {
      * @return true if song is valid, false otherwise
      */
     bool isValid() const {
-        if (songNumber > Song::MAX_SONGS || songLength == 0 || songLength > Song::MAX_NOTES) {
+        if (songNumber > SongConstant::MAX_SONGS || songLength == 0 || songLength > SongConstant::MAX_NOTES) {
             return false;
         }
         
@@ -118,7 +133,7 @@ struct Song {
      * @return true if note was added successfully, false if song is full
      */
     bool addNote(const Note& note) {
-        if (songLength >= Song::MAX_NOTES || !note.isValid()) {
+        if (songLength >= SongConstant::MAX_NOTES || !note.isValid()) {
             return false;
         }
         notes[songLength++] = note;
@@ -495,6 +510,8 @@ struct SensorData {
 // ============================================================================
 
 // These typedefs maintain backward compatibility with existing code
+
+
 typedef Note Note;
 typedef Song Song;
 typedef SensorData RoombaInfos;

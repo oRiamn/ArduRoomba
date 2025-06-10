@@ -197,18 +197,6 @@ public:
     // SENSOR PRESETS
     // ========================================================================
     
-    /**
-     * @brief Predefined sensor sets for common use cases
-     */
-    enum class SensorPreset {
-        BASIC,          ///< Basic sensors (bumpers, cliffs, wall, battery)
-        NAVIGATION,     ///< Navigation sensors (encoders, velocity, radius)
-        SAFETY,         ///< Safety sensors (cliffs, bumpers, wheel drops, overcurrents)
-        BATTERY,        ///< Battery sensors (voltage, current, charge, capacity, temperature)
-        BUTTONS,        ///< Button and IR sensors
-        LIGHT_BUMPERS,  ///< Light bumper sensors
-        ALL_SENSORS     ///< All available sensors
-    };
     
     /**
      * @brief Get sensor list for a preset

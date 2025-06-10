@@ -279,7 +279,7 @@ ErrorCode RoombaCommands::defineSong(const Song& song) {
 }
 
 ErrorCode RoombaCommands::playSong(uint8_t songNumber) {
-    if (songNumber > Song::MAX_SONGS) {
+    if (songNumber > SongConstant::MAX_SONGS) {
         debugPrint("Invalid song number");
         return ErrorCode::INVALID_PARAMETER;
     }
@@ -306,7 +306,7 @@ ErrorCode RoombaCommands::beep(uint8_t frequency, uint8_t duration, uint8_t song
 
 ErrorCode RoombaCommands::beepSequence(uint8_t count, uint8_t frequency, uint8_t duration, 
                                       uint8_t pause, uint8_t songSlot) {
-    if (count == 0 || count > Song::MAX_NOTES / 2) {
+    if (count == 0 || count > SongConstant::MAX_NOTES / 2) {
         return ErrorCode::INVALID_PARAMETER;
     }
     

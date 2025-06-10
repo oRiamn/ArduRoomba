@@ -7,6 +7,7 @@
  * @date 2025-06-06
  */
 
+#include "EEPROM.h"
 #include "ArduRoombaConfig.h"
 
 namespace ArduRoomba {

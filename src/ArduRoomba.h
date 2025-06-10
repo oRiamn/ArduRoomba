@@ -53,11 +53,6 @@
 // Optional modular components (conditionally included)
 #include "core/ArduRoombaConfig.h"    // Configuration management system
 
-// Platform-specific wireless support (conditionally compiled)
-#if defined(ESP32) || defined(ESP8266) || defined(ARDUINO_UNOWIFIR4)
-    #include "wireless/ArduRoombaWiFi.h"  // WiFi connectivity and web interface
-#endif
-
 namespace ArduRoomba {
 
 /**
@@ -283,7 +278,7 @@ public:
      * @param preset Predefined sensor set to stream
      * @return ErrorCode indicating success or failure
      */
-    ErrorCode startSensorStream(RoombaSensors::SensorPreset preset);
+    ErrorCode startSensorStream(SensorPreset preset);
     
     /**
      * @brief Update sensor data from stream
@@ -462,17 +457,5 @@ private:
 };
 
 } // namespace ArduRoomba
-
-// ============================================================================
-// GLOBAL CONVENIENCE TYPEDEF (for backward compatibility)
-// ============================================================================
-
-/**
- * @brief Global typedef for backward compatibility
- * 
- * This allows existing code to continue using "ArduRoomba" without
- * the namespace qualifier.
- */
-typedef ArduRoomba::ArduRoomba ArduRoomba;
 
 #endif // ARDUROOMBA_H

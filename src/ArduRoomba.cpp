@@ -328,7 +328,7 @@ ErrorCode ArduRoomba::getBasicSensorData(SensorData& sensorData) {
     return result;
 }
 
-ErrorCode ArduRoomba::startSensorStream(RoombaSensors::SensorPreset preset) {
+ErrorCode ArduRoomba::startSensorStream(SensorPreset preset) {
     ErrorCode result = _sensors.startStreaming(preset);
     updateLastError(result);
     return result;
