@@ -345,6 +345,7 @@ private:
     
     // State tracking
     bool _initialized;              ///< Initialization status
+    bool _in_init;                  ///< In initialization attempt status
     bool _streamingActive;          ///< Streaming status
     bool _debugEnabled;             ///< Debug output status
     ErrorCode _lastError;           ///< Last error encountered

@@ -45,6 +45,8 @@ ErrorCode RoombaCore::initialize(uint32_t baudRate) {
         debugPrint("Already initialized");
         return ErrorCode::SUCCESS;
     }
+
+    _in_init=true;
     
     _baudRate = baudRate;
     
@@ -83,6 +85,7 @@ ErrorCode RoombaCore::initialize(uint32_t baudRate) {
     }
     
     _initialized = true;
+    _in_init=false;
     debugPrint("Roomba initialization complete");
     debugPrint("Verify CLEAN light has stopped illuminating");
     
@@ -94,7 +97,7 @@ ErrorCode RoombaCore::initialize(uint32_t baudRate) {
 // ============================================================================
 
 ErrorCode RoombaCore::sendCommand(OIOpcode opcode) {
-    if (!_initialized) {
+    if (!_initialized && !_in_init) {
         setLastError(ErrorCode::NOT_INITIALIZED);
         return ErrorCode::NOT_INITIALIZED;
     }

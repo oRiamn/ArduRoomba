@@ -129,6 +129,7 @@ ErrorCode RoombaSensors::startStreaming(const SensorPacket* sensorList, uint8_t 
     uint8_t packets[sensorCount];
     for (uint8_t i = 0; i < sensorCount; i++) {
         packets[i] = static_cast<uint8_t>(sensorList[i]);
+        debugPrint("use sensor", packets[i]);
         _streamSensors[i] = sensorList[i];
     }
     
@@ -145,6 +146,7 @@ ErrorCode RoombaSensors::startStreaming(const SensorPacket* sensorList, uint8_t 
 }
 
 ErrorCode RoombaSensors::startStreaming(SensorPreset preset) {
+    // here
     SensorPacket sensorList[BufferSize::SENSOR_LIST];
     uint8_t sensorCount = getPresetSensorList(preset, sensorList, BufferSize::SENSOR_LIST);
     
