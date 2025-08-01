@@ -53,6 +53,10 @@
 // Optional modular components (conditionally included)
 #include "core/ArduRoombaConfig.h"    // Configuration management system
 
+
+// Platform-specific wireless support (conditionally compiled)
+#include "wireless/ArduRoombaWiFi.h"  // WiFi connectivity and web interface
+
 namespace ArduRoomba {
 
 /**
