@@ -182,7 +182,6 @@ public:
     void maxClean();                                   ///< Start the maximum time cleaning mode
     void spot();                                       ///< Start the spot cleaning mode
     void seekDock();                                   ///< Send the robot to the dock
-    void schedule(ScheduleStore scheduleData);         ///< Set the schedule
     void setDayTime(char day, char hour, char minute); ///< Set the day and time
     void power();                                      ///< Power down the OI
     
@@ -209,8 +208,7 @@ public:
     void queryList(byte numPackets, byte *packetIDs); ///< Request a list of sensor packets
     void queryStream(char sensorlist[]);              ///< Request a list of sensor packets to stream
     void resetStream();                               ///< Request an empty list of sensor packets to stream
-    bool refreshData(RoombaInfos *infos);             ///< Read stream slot
-    
+ 
     // ========================================================================
     // CUSTOM MOVEMENT COMMANDS (Legacy compatibility)
     // ========================================================================
@@ -369,14 +367,6 @@ public:
      */
     void printSensorData(const SensorData& sensorData);
     
-    // ========================================================================
-    // LEGACY TYPE DEFINITIONS (for backward compatibility)
-    // ========================================================================
-    
-    typedef Note Note;                    ///< Legacy Note type
-    typedef Song Song;                    ///< Legacy Song type
-    typedef SensorData RoombaInfos;       ///< Legacy RoombaInfos type
-    typedef ScheduleData ScheduleStore;   ///< Legacy ScheduleStore type
     
 private:
     // ========================================================================

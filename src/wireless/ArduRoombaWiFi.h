@@ -101,7 +101,7 @@ public:
      * @brief Constructor
      * @param roomba Reference to ArduRoomba instance
      */
-    explicit ArduRoombaWiFi(ArduRoomba& roomba);
+    explicit ArduRoombaWiFi(ArduRoomba::ArduRoomba& roomba);
     
     /**
      * @brief Destructor

@@ -99,10 +99,6 @@ void ArduRoomba::seekDock() {
     updateLastError(_commands.seekDock());
 }
 
-void ArduRoomba::schedule(ScheduleStore scheduleData) {
-    updateLastError(_commands.setSchedule(scheduleData));
-}
-
 void ArduRoomba::setDayTime(char day, char hour, char minute) {
     updateLastError(_commands.setDayTime(day, hour, minute));
 }
@@ -241,17 +237,6 @@ void ArduRoomba::queryStream(char sensorlist[]) {
 
 void ArduRoomba::resetStream() {
     updateLastError(_sensors.stopStreaming());
-}
-
-bool ArduRoomba::refreshData(RoombaInfos *infos) {
-    if (infos == nullptr) {
-        updateLastError(ErrorCode::INVALID_PARAMETER);
-        return false;
-    }
-    
-    ErrorCode result = _sensors.updateFromStream(*infos);
-    updateLastError(result);
-    return result == ErrorCode::SUCCESS;
 }
 
 // ============================================================================

@@ -508,15 +508,6 @@ struct SensorData {
 // ============================================================================
 // LEGACY COMPATIBILITY TYPEDEFS
 // ============================================================================
-
-// These typedefs maintain backward compatibility with existing code
-
-
-typedef Note Note;
-typedef Song Song;
-typedef SensorData RoombaInfos;
-typedef ScheduleData ScheduleStore;
-
 } // namespace ArduRoomba
 
 #endif // ARDUROOMBATYPES_H
