@@ -12,6 +12,8 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+namespace ArduRoomba {
+
 // OI Command opcodes
 #define OI_START        128
 #define OI_BAUD         129
@@ -99,6 +101,12 @@ public:
   
   // Debug
   void setDebug(bool enable) { _debug = enable; }
+
+
+  void sendCommand(uint8_t cmd);
+  void sendCommand(uint8_t cmd, uint8_t param);
+  void sendCommand(uint8_t cmd, uint8_t param1, uint8_t param2);
+  void sendCommand(uint8_t cmd, const uint8_t* params, uint8_t numParams);
   
 private:
   SoftwareSerial* _serial;
@@ -108,10 +116,7 @@ private:
   
   // Internal helpers
   void pulseDD();
-  void sendCommand(uint8_t cmd);
-  void sendCommand(uint8_t cmd, uint8_t param);
-  void sendCommand(uint8_t cmd, uint8_t param1, uint8_t param2);
-  void sendCommand(uint8_t cmd, const uint8_t* params, uint8_t numParams);
+
   void sendInt16(int16_t value);
   
   uint8_t readByte(uint16_t timeout = 100);
@@ -120,5 +125,7 @@ private:
   void debugPrint(const char* msg);
   void debugPrint(const char* msg, int value);
 };
+
+} // namespace ArduRoomba
 
 #endif

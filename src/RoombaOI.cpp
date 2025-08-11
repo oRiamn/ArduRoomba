@@ -5,6 +5,8 @@
 
 #include "RoombaOI.h"
 
+namespace ArduRoomba {
+
 RoombaOI::RoombaOI(uint8_t rxPin, uint8_t txPin, uint8_t brcPin)
   : _rxPin(rxPin), _txPin(txPin), _brcPin(brcPin), _connected(false), _debug(false) {
   _serial = new SoftwareSerial(rxPin, txPin);
@@ -300,3 +302,5 @@ void RoombaOI::debugPrint(const char* msg, int value) {
     Serial.println(value);
   }
 }
+
+} // namespace ArduRoomba

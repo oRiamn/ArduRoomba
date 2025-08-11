@@ -11,7 +11,7 @@
 // RX Pin (Roomba TX) -> Pin 2  
 // TX Pin (Roomba RX) -> Pin 3
 // BRC Pin (Roomba DD) -> Pin 4
-ArduRoomba roomba(2, 3, 4);
+ArduRoomba::ArduRoomba roomba(2, 3, 4);
 
 void setup() {
   Serial.begin(19200);

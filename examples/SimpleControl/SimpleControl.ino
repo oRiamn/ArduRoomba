@@ -7,7 +7,7 @@
 
 #include "ArduRoomba.h"
 
-ArduRoomba roomba(2, 3, 4);
+ArduRoomba::ArduRoomba roomba(2, 3, 4);
 
 void setup() {
   Serial.begin(19200);

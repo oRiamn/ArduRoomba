@@ -5,6 +5,8 @@
 
 #include "ArduRoomba.h"
 
+namespace ArduRoomba {
+
 ArduRoomba::ArduRoomba(uint8_t rxPin, uint8_t txPin, uint8_t brcPin)
   : _oi(rxPin, txPin, brcPin), _debug(false) {
 }
@@ -162,3 +164,5 @@ void ArduRoomba::debugPrint(const char* msg, int value) {
     Serial.println(value);
   }
 }
+
+} // namespace ArduRoomba
