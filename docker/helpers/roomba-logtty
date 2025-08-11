@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+device=$(find /dev/ -maxdepth 1 -regex '.*tty.+' | head -n 1)
+(stty raw; (umask 0011; cat > /tmp/esp8266-received.log)) < $device &

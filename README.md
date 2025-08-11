@@ -64,3 +64,53 @@ void setup() {
 - Arduino Uno R3/R4
 - ESP32/ESP8266
 - iRobot Create 2, Roomba 500/600/700 series
+
+## Dev Installation
+
+## Installation
+
+Using docker:
+
+```bash
+docker build -t roomba docker --label roomba.arduino=true
+docker run -it --device=/dev/ttyUSB0 -v $PWD/examples:/root/sketch -v $PWD/:/root/Arduino/libraries/ArduRoomba -v /tmp:/tmp roomba bash
+```
+
+## Usage
+### ESP8266 side
+
+First go to an example ino project (not for docker usage):
+```bash
+cd BasicMovement
+```
+
+```bash
+roomba-compile
+```
+Allow your user to read and write your COM port (not for docker usage):
+
+```bash
+sudo chmod a+rw /dev/ttyUSB0
+```
+
+Upload the compiled program to the board :
+
+```bash
+roomba-upload
+```
+
+For listennig COM port (ESP8266 log server) :
+
+```bash
+tail -f /tmp/esp8266-received.log | xargs -IL date +"%Y-%m-%d %H:%M:%S L"
+```
+
+```bash
+tail -f /tmp/esp8266-received.log | grep -a --line-buffered "FREEHEAP"
+```
+
+if the file `/tmp/esp8266-received.log` does not exist or you do not read any log, then run the command : 
+
+```bash
+roomba-logtty
+```

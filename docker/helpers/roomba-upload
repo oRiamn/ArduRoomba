@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+device=$(find /dev/ -maxdepth 1 -regex '.*tty.+' | head -n 1)
+arduino-cli upload -p $device --fqbn esp8266:esp8266:nodemcuv2
+roomba-logtty
