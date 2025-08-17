@@ -34,6 +34,7 @@ namespace ArduRoomba {
 #define OI_STREAM       148
 
 // Common sensor packet IDs
+#define SENSOR_MODE             35
 #define SENSOR_BUMPS_DROPS      7
 #define SENSOR_WALL             8
 #define SENSOR_CLIFF_LEFT       9
@@ -91,6 +92,7 @@ public:
   bool getSensor(uint8_t sensorId, uint8_t* data, uint8_t dataSize);
   uint16_t getBatteryVoltage();
   int16_t getBatteryCurrent();
+  uint8_t getMode();
   bool isWallDetected();
   bool isBumperPressed();
   
@@ -124,6 +126,7 @@ private:
   
   void debugPrint(const char* msg);
   void debugPrint(const char* msg, int value);
+  void debugPrint(const char* msg, uint8_t value);
 };
 
 } // namespace ArduRoomba

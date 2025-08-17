@@ -23,25 +23,31 @@ bool RoombaOI::begin(uint32_t baudRate) {
   
   // Wait for power stabilization
   delay(2000);
-  
   // Pulse BRC to wake up
   pulseDD();
-  delay(100);
+
+  delay(150);
   
   // Start serial communication
   _serial->begin(baudRate);
-  delay(100);
+  delay(150);
   
+    _connected = true;
   // Send start command
   start();
-  delay(100);
+  delay(150);
   
   // Enter safe mode
   safeMode();
-  delay(100);
+  delay(150);
   
-  _connected = true;
-  debugPrint("Roomba OI initialized");
+  uint8_t mode = getMode();
+  if(mode != 3) { // why "3" ? safe mode should be "2" 
+    debugPrint("Test Mode failed", mode);
+    _connected = false;
+    return false;
+  }
+  debugPrint("Roomba OI initialized successfully");
   return true;
 }
 
@@ -160,6 +166,22 @@ int16_t RoombaOI::getBatteryCurrent() {
   }
   return 0;
 }
+
+/**
+mode : 
+0: Off
+1: Passive
+2: Safe
+3: Full
+*/
+uint8_t RoombaOI::getMode() {
+  uint8_t data;
+  if (getSensor(SENSOR_MODE, &data, 1)) {
+    return data;
+  }
+  return 0;
+}
+
 
 bool RoombaOI::isWallDetected() {
   uint8_t data;
@@ -295,6 +317,15 @@ void RoombaOI::debugPrint(const char* msg) {
 }
 
 void RoombaOI::debugPrint(const char* msg, int value) {
+  if (_debug && msg) {
+    Serial.print("RoombaOI: ");
+    Serial.print(msg);
+    Serial.print(" = ");
+    Serial.println(value);
+  }
+}
+
+void RoombaOI::debugPrint(const char* msg, uint8_t value) {
   if (_debug && msg) {
     Serial.print("RoombaOI: ");
     Serial.print(msg);
